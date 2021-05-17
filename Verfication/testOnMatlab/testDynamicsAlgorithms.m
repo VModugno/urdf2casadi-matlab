@@ -10,7 +10,7 @@ kuka_kr210 = [location_tests_folder,'/../../URDFs/kuka_kr210.urdf'];
 iCub_r_leg = [location_tests_folder,'/../../URDFs/iCub_r_leg.urdf'];
 
 %% Input urdf file to acquire robot structure
-robotModelURDF = iCub_r_leg;
+robotModelURDF = twoLink_urdf;
 
 %% Get number of joints using iDynTree
 mdlLoader = iDynTree.ModelLoader();
@@ -90,7 +90,7 @@ if dynamicRegressor
     nrOfJoints = size(jointPos,1);
     extForce = zeros(6,nrOfJoints);
      
-    % Rettrive Inertia parameters
+    % Retrive Inertia parameters
     smds = extractSystemModel(robotModelURDF);
     for i = 1:nrOfJoints
         p(:,i) = [smds.mass{i}; smds.mass{i}*smds.com{i}; smds.I{i}(1,1); smds.I{i}(1,2); smds.I{i}(1,3);...

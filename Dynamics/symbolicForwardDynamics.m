@@ -1,10 +1,10 @@
-function [forwardDynamicsFunction] = symbolicForwardDynamics(file,geneate_c_code)
+function [forwardDynamicsFunction, env_var_flag] = symbolicForwardDynamics(file,geneate_c_code)
 %Generates equation of motion in symbolic form from urdf file
 %Based on articulated body forward dynamics code by Roy Featherstone, 2015
 %http://royfeatherstone.org/spatial/v2/index.html
 
 %Load urdf and convert to SMDS format
-smds = extractSystemModel(file);
+[smds,model,env_var] = extractSystemModel(file);
 import casadi.*;
 %Initialize variables
 q = SX.sym('q',[1,smds.NB])';
@@ -32,7 +32,6 @@ for i = 1:smds.NB
 
     IA{i} = smds.I{1,i};
     pA{i} = crf(v{i}) * smds.I{1,i} * v{i};
-
 end
 
 for i = smds.NB:-1:1
@@ -58,9 +57,13 @@ for i = 1:smds.NB
 end
 
 % Define the symbolic function and set its input and output in poper order
-
-forwardDynamicsFunction = Function('forwardDynamics',{q,qd,g,tau},{qdd},{'joints_position','joints_velocity','gravity','joints_torque'},{'joints_acceleration'});
-
+if(isempty(env_var))
+    env_var_flag = 0;
+    forwardDynamicsFunction = Function('forwardDynamics',{q,qd,g,tau},{qdd},{'joints_position','joints_velocity','gravity','joints_torque'},{'joints_acceleration'});
+else
+    env_var_flag = 1;
+    forwardDynamicsFunction = Function('forwardDynamics',{q,qd,g,tau,env_var},{qdd},{'joints_position','joints_velocity','gravity','joints_torque','env_variables'},{'joints_acceleration'});
+end
   
 %% Code generation option
 if geneate_c_code

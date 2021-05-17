@@ -1,4 +1,4 @@
-function [I_oL, m, com ,rpy] = computeInertiaWrtCenterOfMass(model, jointIndex)
+function [I_oL, m, com ,rpy, env_var] = computeInertiaWrtCenterOfMass(model, jointIndex, env_var)
 %Compute the inertia of body i wrt a frame centered in the center of mass.
 % Seethe inertial tag for a link in a urdf:
 % http://wiki.ros.org/urdf/XML/link
@@ -14,32 +14,112 @@ if ~isfield(model.robot.link{jointIndex+1}, 'inertial')
     rpy = [0 0 0];
 else
     % Center of mass
-    com = str2num(model.robot.link{jointIndex+1}.inertial.origin.Attributes.xyz);
+    str_com = model.robot.link{jointIndex+1}.inertial.origin.Attributes.xyz;
+    str_com = split(str_com,' ');
+    for i = 1:length(str_com)
+        str_com_cur = split(str_com{i},'_');
+        if(strcmp(str_com_cur{1},'envvar'))
+            v_name  = ['v_' str_com_cur{2}];
+            v_com   = casadi.SX('v_name');
+            com(i)     = v_com;
+            env_var = [env_var v_com];
+        else
+            com(i) = str2num(str_com_cur{1});
+        end
+    end
 
     % Mass
-    m = str2num(model.robot.link{jointIndex+1}.inertial.mass.Attributes.value);
-
+    
+    str_mass = model.robot.link{jointIndex+1}.inertial.mass.Attributes.value;
+    str_mass  = split(str_mass,'_');
+    if(strcmp(str_mass{1},'envvar'))
+        v_name = ['v_' str_mass{2}];
+        v_m    = casadi.SX.sym(v_name);
+        m      = v_m;
+        env_var = [env_var v_m];
+    else  
+        m = str2num(model.robot.link{jointIndex+1}.inertial.mass.Attributes.value);
+    end
     % Inertia
-    ixx = str2num(model.robot.link{jointIndex+1}.inertial.inertia.Attributes.ixx);
+    str_ixx = model.robot.link{jointIndex+1}.inertial.inertia.Attributes.ixx;
+    str_ixx  = split(str_ixx,'_');
+    if(strcmp(str_ixx{1},'envvar'))
+        v_name = ['v_' str_ixx{2}];
+        v_ixx  = casadi.SX.sym(v_name);
+        ixx    = v_ixx;
+        env_var = [env_var v_ixx];
+    else
+        ixx = str2num(model.robot.link{jointIndex+1}.inertial.inertia.Attributes.ixx);
+    end
     
-    ixy = str2num(model.robot.link{jointIndex+1}.inertial.inertia.Attributes.ixy);
+    str_ixy = model.robot.link{jointIndex+1}.inertial.inertia.Attributes.ixy;
+    str_ixy  = split(str_ixy,'_');
+    if(strcmp(str_ixy{1},'envvar'))
+        v_name = ['v_' str_ixy{2}];
+        v_ixy  = casadi.SX.sym(v_name);
+        ixy    = v_ixy;
+        env_var = [env_var v_ixy];
+    else
+        ixy = str2num(model.robot.link{jointIndex+1}.inertial.inertia.Attributes.ixy);
+    end
     
-    ixz = str2num(model.robot.link{jointIndex+1}.inertial.inertia.Attributes.ixz);
+    str_ixz = model.robot.link{jointIndex+1}.inertial.inertia.Attributes.ixz;
+    str_ixz  = split(str_ixz,'_');
+    if(strcmp(str_ixz{1},'envvar'))
+        v_name = ['v_' str_ixz{2}];
+        v_ixz  = casadi.SX.sym(v_name);
+        ixz    = v_ixz;
+        env_var = [env_var v_ixz];
+    else
+        ixz = str2num(model.robot.link{jointIndex+1}.inertial.inertia.Attributes.ixz);
+    end
     
-    iyy  = str2num(model.robot.link{jointIndex+1}.inertial.inertia.Attributes.iyy);
+    str_iyy = model.robot.link{jointIndex+1}.inertial.inertia.Attributes.iyy;
+    str_iyy  = split(str_iyy,'_');
+    if(strcmp(str_iyy(1),'envvar'))
+        v_name = ['v_' str_iyy{2}];
+        v_iyy  = casadi.SX.sym(v_name);
+        iyy    = v_iyy;
+        env_var = [env_var v_iyy];
+    else
+        iyy  = str2num(model.robot.link{jointIndex+1}.inertial.inertia.Attributes.iyy);
+    end
     
-    iyz = str2num(model.robot.link{jointIndex+1}.inertial.inertia.Attributes.iyz);
+    str_iyz = model.robot.link{jointIndex+1}.inertial.inertia.Attributes.iyz;
+    str_iyz  = split(str_iyz,'_');
+    if(strcmp(str_iyz{1},'envvar'))
+        v_name = ['v_' str_iyz{2}];
+        v_iyz  = casadi.SX.sym(v_name);
+        iyz    = v_iyz;
+        env_var = [env_var v_iyz];
+    else
+        iyz = str2num(model.robot.link{jointIndex+1}.inertial.inertia.Attributes.iyz);
+    end
     
-    izz = str2num(model.robot.link{jointIndex+1}.inertial.inertia.Attributes.izz);
+    str_izz = model.robot.link{jointIndex+1}.inertial.inertia.Attributes.izz;
+    str_izz  = split(str_izz,'_');
+    if(strcmp(str_izz{1},'envvar'))
+        v_name = ['v_' str_izz{2}];
+        v_izz  = casadi.SX.sym(v_name);
+        izz    = v_izz;
+        env_var = [env_var v_izz];
+    else
+        izz = str2num(model.robot.link{jointIndex+1}.inertial.inertia.Attributes.izz);
+    end
     
+    % TODO I has to became a casadi if one of I are casadi 
     I =[ixx, ixy, ixz;
         ixy, iyy, iyz;
         ixz, iyz, izz]; 
 
-    % Sanity check on Inertia: it must be at least positive semidefinite
-    principalI = eig(I);
-    if find(principalI<0)
-        warning('Inertial matrix body %d is not positive semi-definite', jointIndex);
+    % Sanity check on Inertia: it must be at least positive semidefinite (only if I is not casadi)
+    if(isequal(class(I),'casadi.SX'))
+        warning('the inertial matrix is symbolic so we cannot check the positive semidefinite')
+    else 
+        principalI = eig(I);
+        if find(principalI<0)
+            warning('Inertial matrix body %d is not positive semi-definite', jointIndex);
+        end
     end
     % Get the orientation of the frame (G) wrt the Inertia is computed in the urdf
     % and the local body frame

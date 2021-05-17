@@ -9,7 +9,7 @@
     </joint>
     <link name="link1">
         <inertial>
-            <mass value="1" />
+            <mass value="envvar_1" />
             <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
             <origin xyz="0.5 0 0" rpy="0 -0 0" />
         </inertial>
@@ -23,11 +23,11 @@
     <link name="link2">
         <inertial>
             <mass value="1" />
-            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
+            <inertia ixx="envvar_2" ixy="0.0" ixz="0.0" iyy="0.01" iyz="envvar_3" izz="0.01" />
             <origin xyz="1 0 0" rpy="0 -0 0" />
         </inertial>
     </link>
-        <sensor name="dummy_accl1" type="accelerometer">
+    <sensor name="dummy_accl1" type="accelerometer">
         <parent link="link1"/>
         <origin xyz="0.01 0.0 0.0" rpy="1.0 0.0 0.0" />
     </sensor> 

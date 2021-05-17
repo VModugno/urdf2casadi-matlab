@@ -1,4 +1,4 @@
-function [smds,model] = extractSystemModel(file)
+function [smds,model, env_var] = extractSystemModel(file)
 %Converts URDF file to System Model Data Structure
 %as specified in http://royfeatherstone.org/spatial/v2/sysmodel.html
 %Load URDF
@@ -26,6 +26,8 @@ else
     smds.I = casadi.SX.sym('I',6,6,smds.NB);
 end
 
+env_var = [];
+
 for i = 1:smds.NB
     %% Compute links parent
     smds.parent = computeParentList(model);
@@ -40,7 +42,7 @@ for i = 1:smds.NB
     % to the frame representing the relative position of the frame of joint i wrt the frame of parent(i)
     smds.Xtree{i} = computeBodyJointTransforms(model,i);    
     %% Compute inertia
-    [I,m,com,rpy] = computeInertiaWrtCenterOfMass(model, i);
+    [I,m,com,rpy,env_var] = computeInertiaWrtCenterOfMass(model, i, env_var);
     smds.I{1,i} = I;
     smds.mass{1,i} = m;
     smds.com{1,i} = com.';
@@ -51,6 +53,8 @@ for i = 1:smds.NB
     smds.linkName{i} = linkName;
     smds.jointName{i} = jointName;     
 end
+% TODO order_casadi env_variable by name if they are not in order
+
 % Store also inertia of the base link
 [I0,m0,com0,rpy0] = computeInertiaWrtCenterOfMass(model, 0);
 smds.I_base = I0;
