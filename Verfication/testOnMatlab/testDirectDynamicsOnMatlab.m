@@ -3,6 +3,8 @@ clear
 clc 
 close all
 
+addpath('C:\Users\valer\matlab_toolbox\casadi-windows-matlabR2016a-v3.5.5');
+
 %% Choose a urdf model idyntree
 location_tests_folder = pwd;
 kuka_urdf        = [location_tests_folder,'/../../URDFs/kr30_ha-identified.urdf'];
@@ -40,7 +42,7 @@ g = [0;0;-gravityModulus];
 
 
 %% Prepare variables to store results
-nrOfTests = 4000;
+nrOfTests = 20;
 
 e_accID   = zeros(nrOfJoints,nrOfTests);
 for i= 1:nrOfTests
@@ -63,7 +65,7 @@ for i= 1:nrOfTests
     
     %% COmpute direct dynamics symbolic
     if(env_var_flag)
-        acc_ID = full(symbolicIDFunction(jointPos,jointVel,g,tau,env_var));
+        acc_ID = full(symbolicIDFunction(jointPos,jointVel,g,tau,env_var'));
     else
         acc_ID = full(symbolicIDFunction(jointPos,jointVel,g,tau));
     end

@@ -22,7 +22,7 @@ else
             v_name  = ['v_' str_com_cur{2}];
             v_com   = casadi.SX('v_name');
             com(i)     = v_com;
-            env_var = [env_var v_com];
+            env_var = [env_var; v_com];
         else
             com(i) = str2num(str_com_cur{1});
         end
@@ -36,7 +36,7 @@ else
         v_name = ['v_' str_mass{2}];
         v_m    = casadi.SX.sym(v_name);
         m      = v_m;
-        env_var = [env_var v_m];
+        env_var = [env_var; v_m];
     else  
         m = str2num(model.robot.link{jointIndex+1}.inertial.mass.Attributes.value);
     end
@@ -47,7 +47,7 @@ else
         v_name = ['v_' str_ixx{2}];
         v_ixx  = casadi.SX.sym(v_name);
         ixx    = v_ixx;
-        env_var = [env_var v_ixx];
+        env_var = [env_var; v_ixx];
     else
         ixx = str2num(model.robot.link{jointIndex+1}.inertial.inertia.Attributes.ixx);
     end
@@ -58,7 +58,7 @@ else
         v_name = ['v_' str_ixy{2}];
         v_ixy  = casadi.SX.sym(v_name);
         ixy    = v_ixy;
-        env_var = [env_var v_ixy];
+        env_var = [env_var; v_ixy];
     else
         ixy = str2num(model.robot.link{jointIndex+1}.inertial.inertia.Attributes.ixy);
     end
@@ -69,7 +69,7 @@ else
         v_name = ['v_' str_ixz{2}];
         v_ixz  = casadi.SX.sym(v_name);
         ixz    = v_ixz;
-        env_var = [env_var v_ixz];
+        env_var = [env_var; v_ixz];
     else
         ixz = str2num(model.robot.link{jointIndex+1}.inertial.inertia.Attributes.ixz);
     end
@@ -80,7 +80,7 @@ else
         v_name = ['v_' str_iyy{2}];
         v_iyy  = casadi.SX.sym(v_name);
         iyy    = v_iyy;
-        env_var = [env_var v_iyy];
+        env_var = [env_var; v_iyy];
     else
         iyy  = str2num(model.robot.link{jointIndex+1}.inertial.inertia.Attributes.iyy);
     end
@@ -91,7 +91,7 @@ else
         v_name = ['v_' str_iyz{2}];
         v_iyz  = casadi.SX.sym(v_name);
         iyz    = v_iyz;
-        env_var = [env_var v_iyz];
+        env_var = [env_var; v_iyz];
     else
         iyz = str2num(model.robot.link{jointIndex+1}.inertial.inertia.Attributes.iyz);
     end
@@ -102,7 +102,7 @@ else
         v_name = ['v_' str_izz{2}];
         v_izz  = casadi.SX.sym(v_name);
         izz    = v_izz;
-        env_var = [env_var v_izz];
+        env_var = [env_var; v_izz];
     else
         izz = str2num(model.robot.link{jointIndex+1}.inertial.inertia.Attributes.izz);
     end
