@@ -1,10 +1,10 @@
-function [symbolicIDFunction] = symbolicInverseDynamics(file,geneate_c_code,location_generated_fucntion)
+function [symbolicIDFunction, env_var_flag] = symbolicInverseDynamics(file,geneate_c_code,location_generated_fucntion)
 %Generates equation of motion in symbolic form from urdf file 
 %Based on RNEA inverse dynamics code by Roy Featherstone, 2015
 %http://royfeatherstone.org/spatial/v2/index.html
 
 %Load urdf and convert to SMDS format
-smds = extractSystemModel(file);
+[smds,model,env_var] = extractSystemModel(file);
 %Initialize variables
 import casadi.*;
 q = SX.sym('q',[smds.NB,1]);
@@ -57,9 +57,17 @@ F_ext = SX.sym('f_ext', 6,smds.NB);
 for ii = 1:smds.NB
     F_ext(:,ii)= f_ext{ii};
 end
-inputVarNames = {'q','qd','qdd','g','F_ext'};
-outputVarName = 'jointToques';
-symbolicIDFunction=Function('rnea',{q,qd,qdd,g,F_ext},{tau},inputVarNames,outputVarName);
+if(isempty(env_var))
+    inputVarNames = {'q','qd','qdd','g','F_ext'};
+    outputVarName = 'jointToques';
+    symbolicIDFunction=Function('rnea',{q,qd,qdd,g,F_ext},{tau},inputVarNames,outputVarName);
+    env_var_flag = 0;
+else
+    inputVarNames = {'q','qd','qdd','g','F_ext','env_variables'};
+    outputVarName = 'jointToques';
+    symbolicIDFunction=Function('rnea',{q,qd,qdd,g,F_ext,env_var},{tau},inputVarNames,outputVarName);
+    env_var_flag = 1;
+end
 % inputVarNames = {'q','qd','qdd','g'};
 % outputVarName = 'jointToques';
 % symbolicIDFunction=Function('rnea',[{q,qd,qdd,g}],{tau},inputVarNames,outputVarName);

@@ -6,21 +6,26 @@ location_generated_functions = [location_tests_folder,'/../../automaticallyGener
 %% Choose a urdf model
 kuka_urdf = '/home/iiticublap215/idjl-model-identification/results/identification_results/kuka_kr30_ha/urdf/kr30_ha-identified.urdf';
 twoLink_urdf = [location_tests_folder,'/../../URDFs/twoLinks.urdf'];
-kuka_kr210 = [location_tests_folder,'/../../URDFs/kuka_kr210.urdf'];
+kuka_kr210     = [location_tests_folder,'/../../URDFs/kuka_kr210.urdf'];
+kuka_kr210_env = [location_tests_folder,'/../../URDFs/kuka_kr210_env.urdf'];
 iCub_r_leg = [location_tests_folder,'/../../URDFs/iCub_r_leg.urdf'];
 
 %% Input urdf file to acquire robot structure
-robotModelURDF = twoLink_urdf;
+robotModelURDFIDyn = kuka_kr210;
+robotModelURDFID   = kuka_kr210_env;
+
+%% nominal variables
+env_var = [1385.5 -0.83462 710.03 -1.3604 6.3154];
 
 %% Get number of joints using iDynTree
 mdlLoader = iDynTree.ModelLoader();
-mdlLoader.loadModelFromFile(robotModelURDF);
+mdlLoader.loadModelFromFile(robotModelURDFIDyn);
 
 kinDynComp = iDynTree.KinDynComputations();
 kinDynComp.loadRobotModel(mdlLoader.model());
 
 nrOfJoints = kinDynComp.model().getNrOfDOFs();
-nrOfTests = 20;
+nrOfTests = 100;
 
 iDynResult_list = zeros(nrOfJoints,nrOfTests);
 symbolcResult_list = zeros(nrOfJoints,nrOfTests);
@@ -37,7 +42,7 @@ dynamicRegressor = false;
 
 if id
     %% Compute the symbolic model
-    symbolicDynamicFunction = symbolicInverseDynamics(robotModelURDF,0, location_generated_functions);
+    [symbolicDynamicFunction, env_var_flag] = symbolicInverseDynamics(robotModelURDFID,0, location_generated_functions);
     % The external forces is a vector of (6,1). It has to be one per
     % link, expect the base link(which for now is considered fixed)
     extForce = zeros(6,nrOfJoints);
@@ -47,10 +52,14 @@ if id
         jointVel = rand(nrOfJoints,1);
         jointAcc = rand(nrOfJoints,1);
         
-        tau_symbolic_function = symbolicDynamicFunction(jointPos, jointVel, jointAcc, g,extForce);
+        if(env_var_flag)
+            tau_symbolic_function = symbolicDynamicFunction(jointPos, jointVel, jointAcc, g,extForce,env_var);
+        else
+            tau_symbolic_function = symbolicDynamicFunction(jointPos, jointVel, jointAcc, g,extForce);
+        end
         tau_symbolic_function = full(tau_symbolic_function);
         
-        iDynResult_list(:,i) = computeInverseDynamicsIDynTree(robotModelURDF,jointPos',jointVel',jointAcc',gravityModulus);
+        iDynResult_list(:,i) = computeInverseDynamicsIDynTree(robotModelURDFIDyn,jointPos',jointVel',jointAcc',gravityModulus);
         symbolcResult_list(:,i)= tau_symbolic_function;
     end
     eps_t1 = abs(iDynResult_list'-symbolcResult_list');
