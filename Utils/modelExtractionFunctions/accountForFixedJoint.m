@@ -23,7 +23,7 @@ if ~isempty(fixedJoints)
             % its inertia is added to the base link, which for now is condered
             % fixed.
             if j>1
-            smds.I{1,j-1} = smds.I{1,j-1} + (smds.Xtree{j}.')*smds.I{1,j}*smds.Xtree{j};
+                smds.I{1,j-1} = smds.I{1,j-1} + (smds.Xtree{j}.')*smds.I{1,j}*smds.Xtree{j};
             end
             
             if j<smds.NB

@@ -8,11 +8,13 @@ kuka_urdf = [location_tests_folder,'/../../URDFs/kr30_ha-identified.urdf'];
 twoLink_urdf = [location_tests_folder,'/../../URDFs/twoLinks.urdf'];
 kuka_kr210 = [location_tests_folder,'/../../URDFs/kuka_kr210.urdf'];
 kuka_kr210_env = [location_tests_folder,'/../../URDFs/kuka_kr210_env.urdf'];
+kuka_kr210_payload = [location_tests_folder,'/../../URDFs/kuka_kr210_payload.urdf'];
+kuka_kr210_payload_env = [location_tests_folder,'/../../URDFs/kuka_kr210_payload_env.urdf'];
 iCub_r_leg = [location_tests_folder,'/../../URDFs/iCub_r_leg.urdf'];
 
 %% Input urdf file to acquire robot structure
-robotModelURDFIDyn = kuka_kr210;
-robotModelURDFID   = kuka_kr210_env;
+robotModelURDFIDyn = kuka_kr210_payload;
+robotModelURDFID   = twoLink_urdf;
 
 %% nominal variables
 env_var = [1385.5 -0.83462 710.03 -1.3604 6.3154];

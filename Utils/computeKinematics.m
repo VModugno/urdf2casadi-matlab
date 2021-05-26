@@ -1,4 +1,4 @@
-function [X,XForce,S,Xup, v, a] = computeKinematics (smds, q, qd, qdd, g)
+function [X,XForce,S,Xup, v, a] = computeKinematics(smds, q, qd, qdd, g)
 %Compute forward kinematics transformations, link velocities and accelerations
 % Specificcaly compute:
 %  *link i spatial velocity(the left trivialized velocity in Traversaro's notation), acceleation in LOCAL body i coordinates
@@ -31,7 +31,7 @@ for i = 1:smds.NB
     X{i}{1,i} = eye(6);
     XForce{i}{1,i} = eye(6);
     for j = i+1:smds.NB
-        X{i}{1,j} = eye(smds.NB);
+        X{i}{1,j} = eye(6); %eye(smds.NB)
         for k = i+1:j
             X{i}{1,j} = Xup{k}*X{i}{1,j};
         end
