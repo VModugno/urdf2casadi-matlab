@@ -21,14 +21,14 @@ iCub_r_leg       = [location_tests_folder,'/../../URDFs/iCub_r_leg.urdf'];
 
 %% Input urdf file to acquire robot structure
 robotURDFModelIDyn = kuka_kr210;
-robotURDFmodelID   = kuka_kr210;
+robotURDFmodelID   = kuka_kr210_env;
 
 %% Constants
 gravityModulus = 9.80665;
 tol = 1e-10;
 
 %% nominal variables
-env_var = [1385.5 -0.83462 710.03 -1.3604 6.3154];
+env_var = [0;-0.017956];
 
 %1385.5 -0.83462
 

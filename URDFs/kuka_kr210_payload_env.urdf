@@ -174,8 +174,8 @@
   </joint>
   <link name="link_6">
     <inertial>
-      <origin rpy="envvar_1 0 0" xyz="envvar_2 -1.5237E-05 0.00015484"/>
-      <mass value="6.3154"/>
+      <origin rpy="0 0 0" xyz="-0.017956 -1.5237E-05 0.00015484"/>
+      <mass value="envvar_1"/>
       <inertia ixx="0.031746" ixy="1.7673E-07" ixz="-6.6558E-06" iyy="0.016686" iyz="1.4304E-07" izz="0.016723"/>
     </inertial>
     <visual>
@@ -194,7 +194,7 @@
       </geometry>
     </collision>
   </link>
-  <joint name="joint_6" type="revolute">
+  <joint name="joint_6" type="fixed">
     <origin rpy="0 0 0" xyz="0.1925 0 0"/>
     <parent link="link_5"/>
     <child link="link_6"/>

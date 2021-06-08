@@ -13,15 +13,39 @@ if ~isfield(model.robot.link{jointIndex+1}, 'inertial')
     I = zeros(3);
     rpy = [0 0 0];
 else
+    % Get the orientation of the frame (G) wrt the Inertia is computed in the urdf
+    % and the local body frame
+    if isfield(model.robot.link{1,jointIndex+1}.inertial.origin.Attributes,'rpy')
+        str_rpy = model.robot.link{1,jointIndex+1}.inertial.origin.Attributes.rpy;
+        str_rpy = split(str_rpy,' ');
+        rpy     = casadi.SX.sym('rpy',[1 3]);
+        for i = 1:length(str_rpy)
+            str_rpy_cur = split(str_rpy{i},'_');
+            if(strcmp(str_rpy_cur{1},'envvar'))
+                v_name  = ['v_' str_rpy_cur{2}];
+                v_rpy   = casadi.SX.sym('v_name');
+                rpy(i)  = v_rpy;
+                env_var = [env_var; v_rpy];
+            else
+                rpy(i) = str2num(str_rpy_cur{1});
+            end
+        end
+        %rpy = str2num(model.robot.link{1,jointIndex+1}.inertial.origin.Attributes.rpy);
+    else
+        warning('Link %d missing orientation of the frame wrt the inertia is computed in the urdf.\n Setting it to [0 0 0]', jointIndex);
+        rpy = [0 0 0];
+    end
+    
     % Center of mass
     str_com = model.robot.link{jointIndex+1}.inertial.origin.Attributes.xyz;
     str_com = split(str_com,' ');
+    com     = casadi.SX.sym('rpy',[1 3]);
     for i = 1:length(str_com)
         str_com_cur = split(str_com{i},'_');
         if(strcmp(str_com_cur{1},'envvar'))
             v_name  = ['v_' str_com_cur{2}];
-            v_com   = casadi.SX('v_name');
-            com(i)     = v_com;
+            v_com   = casadi.SX.sym('v_name');
+            com(i)  = v_com;
             env_var = [env_var; v_com];
         else
             com(i) = str2num(str_com_cur{1});
@@ -29,7 +53,6 @@ else
     end
 
     % Mass
-    
     str_mass = model.robot.link{jointIndex+1}.inertial.mass.Attributes.value;
     str_mass  = split(str_mass,'_');
     if(strcmp(str_mass{1},'envvar'))
@@ -40,6 +63,7 @@ else
     else  
         m = str2num(model.robot.link{jointIndex+1}.inertial.mass.Attributes.value);
     end
+    
     % Inertia
     str_ixx = model.robot.link{jointIndex+1}.inertial.inertia.Attributes.ixx;
     str_ixx  = split(str_ixx,'_');
@@ -120,14 +144,6 @@ else
         if find(principalI<0)
             warning('Inertial matrix body %d is not positive semi-definite', jointIndex);
         end
-    end
-    % Get the orientation of the frame (G) wrt the Inertia is computed in the urdf
-    % and the local body frame
-    if isfield(model.robot.link{1,jointIndex+1}.inertial.origin.Attributes,'rpy')
-        rpy = str2num(model.robot.link{1,jointIndex+1}.inertial.origin.Attributes.rpy);
-    else
-        warning('Link %d missing orientation of the frame wrt the inertia is computed in the urdf.\n Setting it to [0 0 0]', jointIndex);
-        rpy = [0 0 0];
     end
 end
 % Compute the Inertia matrix wrt a frame centered in the center of mass(g) but

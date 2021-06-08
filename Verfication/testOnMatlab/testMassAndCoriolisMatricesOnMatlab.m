@@ -13,12 +13,12 @@ kuka_kr210_payload_env = [location_tests_folder,'/../../URDFs/kuka_kr210_payload
 iCub_r_leg = [location_tests_folder,'/../../URDFs/iCub_r_leg.urdf'];
 
 %% Input urdf file to acquire robot structure
-robotModelURDFIDyn = kuka_kr210_payload;
-robotModelURDFID   = twoLink_urdf;
+robotModelURDFIDyn = kuka_kr210;
+robotModelURDFID   = kuka_kr210_env;
 
 %% nominal variables
-env_var = [1385.5 -0.83462 710.03 -1.3604 6.3154];
-
+%env_var = [1385.5 -0.83462 710.03 -1.3604 6.3154];
+env_var  = [];
 %% Constants
 gravityModulus = 9.80665;
 tol = 1e-10;
