@@ -56,7 +56,7 @@ end
 % TODO order_casadi env_variable by name if they are not in order
 
 % Store also inertia of the base link
-[I0,m0,com0,rpy0] = computeInertiaWrtCenterOfMass(model, 0, env_var);
+[I0,m0,com0,rpy0, env_var] = computeInertiaWrtCenterOfMass(model, 0, env_var);
 smds.I_base = I0;
 smds.mass_base = m0;
 smds.com_base = com0;
