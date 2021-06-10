@@ -28,7 +28,7 @@ gravityModulus = 9.80665;
 tol = 1e-10;
 
 %% nominal variables
-env_var = [0;-0.017956];
+env_var = [-0.017956];
 
 %1385.5 -0.83462
 

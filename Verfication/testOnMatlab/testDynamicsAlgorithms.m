@@ -8,14 +8,16 @@ kuka_urdf = '/home/iiticublap215/idjl-model-identification/results/identificatio
 twoLink_urdf = [location_tests_folder,'/../../URDFs/twoLinks.urdf'];
 kuka_kr210     = [location_tests_folder,'/../../URDFs/kuka_kr210.urdf'];
 kuka_kr210_env = [location_tests_folder,'/../../URDFs/kuka_kr210_env.urdf'];
+kuka_lwr       = [location_tests_folder,'/../../URDFs/kuka_lwr.urdf'];
+kuka_lwr_env   = [location_tests_folder,'/../../URDFs/kuka_lwr_env.urdf'];
 iCub_r_leg = [location_tests_folder,'/../../URDFs/iCub_r_leg.urdf'];
 
 %% Input urdf file to acquire robot structure
-robotModelURDFIDyn = kuka_kr210;
-robotModelURDFID   = kuka_kr210_env;
+robotModelURDFIDyn = kuka_lwr;
+robotModelURDFID   = kuka_lwr_env;
 
 %% nominal variables
-env_var = [1385.5 -0.83462 710.03 -1.3604 6.3154];
+env_var = [0.25];
 
 %% Get number of joints using iDynTree
 mdlLoader = iDynTree.ModelLoader();
