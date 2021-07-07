@@ -23,7 +23,7 @@ else
             str_rpy_cur = split(str_rpy{i},'_');
             if(strcmp(str_rpy_cur{1},'envvar'))
                 v_name  = ['v_' str_rpy_cur{2}];
-                v_rpy   = casadi.SX.sym('v_name');
+                v_rpy   = casadi.SX.sym(v_name);
                 rpy(i)  = v_rpy;
                 env_var = [env_var; v_rpy];
             else
@@ -44,7 +44,7 @@ else
         str_com_cur = split(str_com{i},'_');
         if(strcmp(str_com_cur{1},'envvar'))
             v_name  = ['v_' str_com_cur{2}];
-            v_com   = casadi.SX.sym('v_name');
+            v_com   = casadi.SX.sym(v_name);
             com(i)  = v_com;
             env_var = [env_var; v_com];
         else
